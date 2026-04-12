@@ -1,4 +1,4 @@
-# 🧙‍♂️ Wizard ChatApp: Real-Time Communication Platform
+# 🧙‍♂️ ChatterBox ChatApp: Real-Time Communication Platform
 
 Wizard ChatApp is a fully responsive, feature-rich real-time messaging application with a playful "cartoon-wizard" aesthetic. Built with the MERN stack (MongoDB, Express, React, Node.js) and enhanced with Socket.io for instantaneous interactions, it offers a seamless experience across mobile, tablet, and desktop devices.
 
