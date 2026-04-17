@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { ChatContext } from "../../context/chatContext";
 import { AuthContext } from "../../context/authContext";
 import { formatMessageTime } from "../lib/utils";
-import { Image, Menu, Info, Video, Trash2 } from "lucide-react";
+import { Image, Menu, Info, Video, Trash2, ChevronLeft } from "lucide-react";
 import { VideoCallContext } from "../../context/VideoCallContext";
 import { NavLink } from "react-router-dom";
 // import {ThemeSelector} from "./ThemeSelector";
@@ -28,25 +28,7 @@ function ChatContainer({ onOpenLeft }) {
   } = useContext(ChatContext);
   const { startCall } = useContext(VideoCallContext);
 
-  /* ---------------- PASSWORD LOCK ---------------- */
-  const CHAT_PASSWORD = "1234"; // change this
-  const [locked, setLocked] = useState(true);
-  const [passInput, setPassInput] = useState("");
 
-  useEffect(() => {
-    const unlocked = sessionStorage.getItem("chatUnlocked");
-    if (unlocked === "true") setLocked(false);
-  }, []);
-
-  const handleUnlock = () => {
-    if (passInput === CHAT_PASSWORD) {
-      sessionStorage.setItem("chatUnlocked", "true");
-      setLocked(false);
-    } else {
-      alert("Wrong password");
-    }
-  };
-  /* ------------------------------------------------ */
 
   const [input, setInput] = useState("");
   const [showMenu, setShowMenu] = useState(false);
@@ -90,29 +72,7 @@ function ChatContainer({ onOpenLeft }) {
     e.target.value = "";
   };
 
-  /* -------- LOCK SCREEN -------- */
-  if (locked) {
-    return (
-      <div className="h-full flex items-center justify-center bg-black/40 backdrop-blur-sm">
-        <div className="bg-white border-4 border-black rounded-xl p-6 flex flex-col gap-4 items-center w-80">
-          <h2 className="font-extrabold text-xl">Enter Chat Password</h2>
 
-          <input
-            type="password"
-            value={passInput}
-            onChange={(e) => setPassInput(e.target.value)}
-            className="cartoon-input w-full text-center"
-            placeholder="Password"
-          />
-
-          <button onClick={handleUnlock} className="cartoon-btn bg-green-400 w-full">
-            Unlock
-          </button>
-        </div>
-      </div>
-    );
-  }
-  /* ----------------------------- */
 
   if (!selectedUser) {
     return (
@@ -125,7 +85,7 @@ function ChatContainer({ onOpenLeft }) {
         >
           <Menu size={24} />
         </button>
-        <p className="text-xl font-extrabold">Select a chat</p>
+        <p className="text-xl md:text-3xl font-extrabold text-gray-500">Select a chat</p>
       </div>
     );
   }
@@ -140,9 +100,9 @@ function ChatContainer({ onOpenLeft }) {
           type="button"
           onClick={onOpenLeft}
           className="cartoon-btn p-2 md:hidden"
-          aria-label="Open chat sidebar"
+          aria-label="Back to chat list"
         >
-          <Menu size={20} />
+          <ChevronLeft size={20} />
         </button>
 
         <img src={selectedUser?.profilePic || `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(selectedUser?.fullName || selectedUser?.username || "U")}&backgroundColor=8B5CF6,4F46E5,EC4899,10B981,F59E0B`} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-black" />

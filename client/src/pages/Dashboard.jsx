@@ -116,68 +116,56 @@ function Dashboard() {
 
       {/* HEADER */}
 
-      <div className="flex justify-between items-center flex-wrap mb-6 sm:mb-10">
-
-        <div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[var(--primary)] leading-tight">
+      <div className="flex justify-between items-center flex-wrap mb-8 sm:mb-12">
+        <div className="max-w-4xl">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black text-[var(--primary)] leading-[1.1] tracking-tight">
             Welcome back,{" "}
-            <span className="rainbow-text">
+            <span className="rainbow-text block sm:inline">
               {authUser?.fullName}
             </span>
           </h1>
-          <p className="text-[var(--text-secondary)] mt-2">
+          <p className="text-base sm:text-lg md:text-xl font-bold text-[var(--text-secondary)] mt-4 max-w-2xl opacity-90">
             Your chat playground is ready. Dive in and connect with your friends!
           </p>
         </div>
-
       </div>
 
       {/* CARTOON STATS */}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
         {cards.map((card, index) => {
-
           return (
-
             <div
               key={index}
               className={`
               ${card.color}
               border-2 sm:border-4 border-[var(--text-primary)]
-              rounded-2xl sm:rounded-3xl
-              p-4 sm:p-6
-              flex items-center gap-4
-              transition
+              rounded-xl sm:rounded-3xl
+              p-3 sm:p-6
+              flex flex-col md:flex-row items-center gap-2 sm:gap-4
+              transition-all duration-300
               hover:-translate-y-2
-              hover:rotate-1
+              hover:shadow-[8px_8px_0px_0px_var(--text-primary)]
               cursor-pointer
+              group
             `}>
 
-              <div className="bg-[var(--surface)] p-2 sm:p-3 rounded-full border-2 sm:border-3 border-[var(--text-primary)] text-[var(--text-primary)]">
-
-                {React.cloneElement(card.icon, { size: window.innerWidth < 640 ? 20 : 26 })}
-
+              <div className="bg-[var(--surface)] p-2 sm:p-3 rounded-full border-2 sm:border-3 border-[var(--text-primary)] text-[var(--text-primary)] transition-transform group-hover:rotate-12">
+                {React.cloneElement(card.icon, { size: 24 })}
               </div>
 
-              <div className="text-[var(--text-primary)]">
-
-                <p className="text-xl sm:text-3xl font-extrabold">
+              <div className="text-[var(--text-primary)] text-center sm:text-left">
+                <p className="text-2xl sm:text-3xl font-black">
                   {card.value}
                 </p>
-
-                <p className="text-xs sm:text-sm font-semibold opacity-80">
+                <p className="text-[10px] sm:text-xs font-black uppercase tracking-widest opacity-80">
                   {card.title}
                 </p>
-
               </div>
 
             </div>
-
           );
-
         })}
-
       </div>
 
       {/* LOWER PANELS */}

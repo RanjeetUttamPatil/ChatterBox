@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState, useMemo } from "react";
 import { RoomContext } from "../../context/roomContext";
 import { AuthContext } from "../../context/authContext";
 import { formatMessageTime } from "../lib/utils";
-import { Image, Info, X, Clock, Trash2 } from "lucide-react";
+import { Image, Info, X, Clock, Trash2, Menu, Users } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { ChatContext } from "../../context/chatContext";
 
@@ -33,8 +33,6 @@ function ChatRoom({ onOpenLeft }) {
   const [showList, setShowList] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [deletingMsgId, setDeletingMsgId] = useState(null);
-  const [summary, setSummary] = useState("");
-  const [loadingSummary, setLoadingSummary] = useState(false);
 
   const scrollEnd = useRef(null);
   const menuRef = useRef(null);
@@ -42,7 +40,6 @@ function ChatRoom({ onOpenLeft }) {
   useEffect(() => {
     if (activeRoom?._id) {
       loadRoomMessages(activeRoom._id);
-      setSummary("");
     }
   }, [activeRoom?._id, loadRoomMessages]);
 
@@ -120,13 +117,6 @@ function ChatRoom({ onOpenLeft }) {
     setInput("");
   };
 
-  const handleSummarize = async () => {
-    if (!activeRoom) return;
-    setLoadingSummary(true);
-    const res = await summarizeRoom(activeRoom._id);
-    if (res) setSummary(res);
-    setLoadingSummary(false);
-  };
 
 
 
@@ -172,23 +162,23 @@ function ChatRoom({ onOpenLeft }) {
 
       {/* HEADER */}
 
-      <div className="flex items-center gap-2 sm:gap-3 border-b-4 border-black p-3 sm:p-4 relative bg-[#F5F3FF]">
+      <div className="flex items-center gap-1.5 sm:gap-3 border-b-4 border-black p-2 sm:p-4 relative bg-[#F5F3FF]">
 
         <button
           type="button"
           onClick={onOpenLeft}
-          className="cartoon-btn p-2 md:hidden"
+          className="cartoon-btn p-1.5 sm:p-2 md:hidden"
           aria-label="Back to rooms"
         >
-          <X size={18} />
+          <X size={16} />
         </button>
 
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-purple-400 border-2 border-black flex items-center justify-center font-black text-white shrink-0">
+        <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-purple-400 border-2 border-black flex items-center justify-center font-black text-white shrink-0">
           {activeRoom.roomName?.[0]?.toUpperCase()}
         </div>
 
-        <div className="flex flex-col min-w-0 flex-1 sm:flex-none">
-          <p className="font-extrabold text-base sm:text-lg truncate leading-tight">
+        <div className="flex flex-col min-w-0 flex-1 sm:flex-none max-w-[100px] xs:max-w-[150px] sm:max-w-none">
+          <p className="font-extrabold text-sm sm:text-lg truncate leading-tight">
             {activeRoom.roomName}
           </p>
 
@@ -200,48 +190,41 @@ function ChatRoom({ onOpenLeft }) {
           </div>
         </div>
 
-        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+        <div className="ml-auto flex items-center gap-1 sm:gap-2 flex-shrink-0">
           {activeRoom.expiresAt && (
             <div
-              className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border text-[10px] sm:text-xs font-semibold shadow-sm transition-all
+              className={`flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border text-[9px] sm:text-xs font-semibold shadow-sm transition-all
              ${remainMs < 60000
                   ? "bg-red-100 text-red-700 border-red-400 animate-pulse"
                   : "bg-yellow-100 text-yellow-800 border-yellow-600"
                 }`}
             >
-              <Clock size={12} className="flex-shrink-0" />
-              <span className="whitespace-nowrap hidden xs:inline">Expires</span>
+              <Clock size={10} className="flex-shrink-0 sm:size-3" />
+              <span className="whitespace-nowrap hidden sm:inline">Expires</span>
               <span className="font-bold">{remainText}</span>
             </div>
           )}
 
-          <div className="hidden sm:flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {isAdmin && (
               <button
                 type="button"
                 onClick={() => setShowList((v) => !v)}
                 disabled={activeRoom.maxMembers && activeRoom.members?.length >= activeRoom.maxMembers}
-                className={`saas-btn bg-red-500 text-white px-2 sm:px-3 py-1 sm:py-1.5 text-[9px] sm:text-[10px] font-black uppercase ${activeRoom.maxMembers && activeRoom.members?.length >= activeRoom.maxMembers
+                className={`saas-btn p-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs font-black uppercase transition-all active:scale-95 ${activeRoom.maxMembers && activeRoom.members?.length >= activeRoom.maxMembers
                   ? "bg-gray-200 text-red-500 cursor-not-allowed shadow-none"
-                  : "bg-[#A1EEBD] text-black"
+                  : "bg-[#A1EEBD] text-black border-2 border-black"
                   }`}
+                aria-label="Invite Members"
               >
-                Add Members
+                <span className="hidden sm:inline">Add Members</span>
+                <span className="sm:hidden flex items-center gap-1">
+                   <Users size={14} /> 
+                   <span>+</span>
+                </span>
               </button>
             )}
-
-            <button
-              type="button"
-              onClick={handleSummarize}
-              disabled={loadingSummary}
-              className="saas-btn bg-[var(--primary)] text-white px-2 sm:px-3 py-1 sm:py-1.5 text-[9px] sm:text-[10px] font-black uppercase"
-            >
-              {loadingSummary ? "..." : "Summarize"}
-            </button>
           </div>
-
-          
-
         </div>
 
 
@@ -434,19 +417,6 @@ function ChatRoom({ onOpenLeft }) {
         )}
       </div>
 
-      {/* SUMMARY DISPLAY */}
-      {summary && (
-        <div className="mx-4 mt-4 p-3 bg-blue-50 border-2 border-black rounded-xl relative animate-fadeIn">
-          <button 
-            onClick={() => setSummary("")}
-            className="absolute top-2 right-2 text-gray-500 hover:text-black"
-          >
-            <X size={16} />
-          </button>
-          <p className="text-xs font-black uppercase text-blue-600 mb-1">Room Summary</p>
-          <p className="text-sm font-bold text-gray-800">{summary}</p>
-        </div>
-      )}
 
       {/* MESSAGES AREA */}
 
@@ -527,7 +497,7 @@ function ChatRoom({ onOpenLeft }) {
                     />
                   ) : (
                     <div
-                      className={`border-2 sm:border-4 border-black rounded-2xl sm:rounded-3xl px-3 py-1.5 sm:px-4 sm:py-2 font-bold text-sm sm:text-base ${isMe ? "rounded-br-none" : "rounded-bl-none"}`}
+                      className={`border-2 sm:border-4 border-black rounded-2xl sm:rounded-3xl px-3 py-1.5 sm:px-4 sm:py-2 font-bold text-[13px] sm:text-base leading-tight sm:leading-normal ${isMe ? "rounded-br-none" : "rounded-bl-none"}`}
                       style={isMe ? { background: "var(--sent)" } : { background: "var(--received)" }}
                     >
                       {msg.text}

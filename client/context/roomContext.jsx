@@ -98,7 +98,11 @@ export function RoomProvider({ children }) {
       const { data } = await axios.post("/api/rooms", payload);
 
       if (data.success) {
-        await loadRooms();
+        setRooms(prev => ({
+          ...prev,
+          created: [data.room, ...(prev.created || [])]
+        }));
+        await loadRooms(); // Fetch full populated data in background
         setActiveRoom(data.room);
         toast.success("Room created");
         return true;

@@ -20,7 +20,7 @@ function RoomsPage() {
       
       {/* SIDEBAR */}
       <div
-        className={`h-full w-full md:w-1/3 border-r border-[var(--border)] transition-all ${activeRoom ? "hidden md:block" : "block"}`}
+        className={`h-full w-full md:w-[320px] lg:w-[380px] border-r border-[var(--border)] transition-all duration-300 ${activeRoom ? "hidden md:block" : "block"}`}
       >
         <RoomSidebar onClose={() => {}} />
       </div>

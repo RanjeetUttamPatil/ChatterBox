@@ -227,7 +227,7 @@ Create Room</h1>
 
             <button
               onClick={() => {
-                navigate("/profile");
+                navigate("/settings");
                 setShowMenu(false);
               }}
               className="cartoon-btn bg-[#A1EEBD]"

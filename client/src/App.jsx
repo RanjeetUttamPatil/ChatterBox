@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
 import { Toaster } from "react-hot-toast";
 import { AuthContext } from "../context/authContext";
 import ScanConnectPage from "./pages/ScanConnectPage";
@@ -20,11 +19,16 @@ import Dashboard from "./pages/Dashboard";
 import VideoCall from "./components/VideoCall";
 import { useThemeStore } from "./store/useThemeStore";
 import { THEMES } from "./constants";
+import BottomBar from "./components/BottomBar";
+import { useLocation } from "react-router-dom";
 
 function App() {
   const { authUser, loading } = useContext(AuthContext);
   const { theme } = useThemeStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/landing";
 
   // Apply theme dynamically whenever it changes
   useEffect(() => {
@@ -70,7 +74,7 @@ function App() {
   }
 
   return (
-    <div className="w-screen h-screen flex flex-col overflow-hidden bg-[var(--bg)] text-[var(--text)] transition-colors duration-200">
+    <div className="w-screen h-[100dvh] flex flex-col overflow-hidden bg-[var(--bg)] text-[var(--text)] transition-colors duration-200">
        <Toaster
         position="top-center"
         toastOptions={{
@@ -81,7 +85,7 @@ function App() {
             border: "4px solid #000",
             borderRadius: "20px",
             fontWeight: "800",
-            fontFamily: "'Baloo 2', cursive",
+            fontFamily: "'Outfit', sans-serif",
             padding: "16px 20px",
           },
       
@@ -125,13 +129,12 @@ function App() {
           />
         )}
 
-        <main className={`flex-1 overflow-y-auto transition-all duration-300 ${isSidebarOpen ? 'md:ml-0' : ''}`}>
+        <main className="flex-1 overflow-y-auto transition-all duration-300 min-w-0">
           <RoomProvider>
             <Routes>
               <Route path="/" element={authUser ? <Dashboard/> : <Navigate to="/login" />} />
               <Route path="/chats" element={authUser ? <HomePage /> : <Navigate to="/login" />} />
               <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
-              <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
               <Route path="/scan" element={authUser ? <ScanConnectPage /> : <Navigate to="/login" />} />
               <Route path="/landing" element={<LandingPage />} />
               <Route path="/friends" element={authUser ? <Friendlist /> : <Navigate to="/login" />} />
@@ -143,6 +146,8 @@ function App() {
           </RoomProvider>
         </main>
       </div>
+
+      {authUser && !isAuthPage && <BottomBar />}
     </div>
   );
 }

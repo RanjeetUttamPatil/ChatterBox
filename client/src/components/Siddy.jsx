@@ -1,14 +1,32 @@
 import React, { useState, useContext } from "react";
-import { Home, Wallet, PieChart, Gift, Settings, Bell, UserPlus, Users, MessageCircle, LayoutDashboard, ChevronLeft, ChevronRight } from "lucide-react";
+import { 
+  Home, 
+  Wallet, 
+  PieChart, 
+  Gift, 
+  Settings, 
+  Bell, 
+  UserPlus, 
+  Users, 
+  MessageCircle, 
+  LayoutDashboard, 
+  ChevronLeft, 
+  ChevronRight, 
+  QrCode, 
+  User, 
+  LogOut,
+  Info
+} from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { NotificationContext } from "../../context/NotificationContext";
+import { AuthContext } from "../../context/authContext";
 
 function Siddy({ isOpen, setIsOpen }) {
-
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const { notifications } = useContext(NotificationContext);
+  const { authUser, logout } = useContext(AuthContext);
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -19,152 +37,90 @@ function Siddy({ isOpen, setIsOpen }) {
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
+  const isActive = (path) => location.pathname === path;
+
   const getColor = (path) => {
-    return location.pathname === path
+    return isActive(path)
       ? "text-[var(--primary)] bg-[var(--primary)]/10"
       : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg)]";
   };
 
   const itemStyle =
-    "flex items-center px-4 py-3 rounded-lg transition-all duration-300 cursor-pointer overflow-hidden whitespace-nowrap";
+    "flex items-center px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer overflow-hidden whitespace-nowrap group relative";
 
   return (
     <aside
-      className={`fixed md:relative top-0 left-0 h-full bg-[var(--surface)] border-r border-[var(--border)] flex flex-col p-3 transition-all duration-300 ease-in-out z-50 ${
-        isOpen ? "translate-x-0 w-64" : "-translate-x-full md:translate-x-0"
+      className={`fixed md:relative top-0 left-0 h-full bg-[var(--surface)] border-r border-[var(--border)] flex flex-col p-4 transition-all duration-500 ease-in-out z-50 shadow-2xl md:shadow-none ${
+        isOpen ? "translate-x-0 w-[280px]" : "-translate-x-full md:translate-x-0"
       } ${
-        collapsed ? "md:w-20" : "md:w-64"
+        collapsed ? "md:w-20" : "md:w-[280px]"
       }`}
     >
       {/* Toggle Button (Desktop only) */}
-      <div className="hidden md:flex items-center justify-center mb-6">
+      <div className={`hidden md:flex items-center mb-8 ${collapsed ? "justify-center" : "justify-between"}`}>
+         {!collapsed && (
+           <h1 className="text-2xl font-black text-[var(--primary)] transition-opacity duration-300">
+              Navigator
+           </h1>
+         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-center p-2 rounded-lg hover:bg-[var(--bg)] transition-colors duration-200 text-[var(--text-primary)]"
+          className="flex items-center justify-center p-2 rounded-xl hover:bg-[var(--bg)] transition-colors duration-200 text-[var(--text-primary)] border border-transparent hover:border-[var(--border)] shrink-0"
         >
-          {collapsed ? <ChevronRight size={24}/> : <><h1 className="text-2xl font-bold">Navigater</h1><ChevronLeft size={24}/></>}
+          {collapsed ? <ChevronRight size={20}/> : <ChevronLeft size={20}/>}
         </button>
       </div>
 
       {/* Mobile Title */}
-      <div className="flex md:hidden items-center justify-between mb-6 px-2">
-        <h1 className="text-2xl font-bold">Navigater</h1>
+      <div className="flex md:hidden items-center justify-between mb-8 px-2">
+        <h1 className="text-2xl font-black text-[var(--primary)]">Navigator</h1>
+        <button onClick={() => setIsOpen(false)} className="p-2 rounded-lg bg-[var(--bg)]">
+            <ChevronLeft size={20}/>
+        </button>
       </div>
 
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-1.5 flex-1 overflow-y-auto no-scrollbar">
 
-        <button
-          onClick={() => handleNavigate("/")}
-          className={`${itemStyle} ${getColor("/")}`}
-        >
+        {[
+          { name: "Dashboard", path: "/", icon: <LayoutDashboard size={22}/> },
+          { name: "Chats", path: "/chats", icon: <MessageCircle size={22}/> },
+          { name: "Connect More", path: "/friends", icon: <UserPlus size={22}/> },
+          { name: "Create Room", path: "/rooms", icon: <Users size={22}/> },
+          { name: "Notifications", path: "/notifications", icon: <Bell size={22}/>, badge: unreadCount },
+          { name: "Settings", path: "/settings", icon: <Settings size={22}/> },
+        ].map((item) => (
+          <button
+            key={item.path}
+            onClick={() => handleNavigate(item.path)}
+            className={`${itemStyle} ${getColor(item.path)}`}
+          >
+            <div className={`min-w-[24px] flex items-center justify-center transition-transform duration-300 ${isActive(item.path) ? "scale-110" : "group-hover:scale-110"}`}>
+              {item.icon}
+            </div>
 
-          <div className="min-w-[24px] flex items-center justify-center">
-            <LayoutDashboard size={22}/>
-          </div>
+            <span className={`font-bold ml-3 transition-all duration-300 ${collapsed ? "md:opacity-0 md:w-0" : "opacity-100 w-auto"}`}>
+              {item.name}
+            </span>
 
-          <span className={`font-semibold ml-3 transition-all duration-300 ease-in-out ${collapsed ? "md:opacity-0 md:w-0" : "opacity-100 w-auto"}`}>
-            DashBord
-          </span>
-
-        </button>
-
-
-        <button
-          onClick={() => handleNavigate("/chats")}
-          className={`${itemStyle} ${getColor("/chats")}`}
-        >
-
-          <div className="min-w-[24px] flex items-center justify-center">
-            <MessageCircle size={22}/>
-          </div>
-
-          <span className={`font-semibold ml-3 transition-all duration-300 ease-in-out ${collapsed ? "md:opacity-0 md:w-0" : "opacity-100 w-auto"}`}>
-            Chats
-          </span>
-
-        </button>
-
-
-        <button
-          onClick={() => handleNavigate("/friends")}
-          className={`${itemStyle} ${getColor("/friends")}`}
-        >
-
-          <div className="min-w-[24px] flex items-center justify-center">
-            <UserPlus size={22}/>
-          </div>
-
-          <span className={`font-semibold ml-3 transition-all duration-300 ease-in-out ${collapsed ? "md:opacity-0 md:w-0" : "opacity-100 w-auto"}`}>
-            Connect More
-          </span>
-
-        </button>
-
-
-        <button
-          onClick={() => handleNavigate("/rooms")}
-          className={`${itemStyle} ${getColor("/rooms")}`}
-        >
-
-          <div className="min-w-[24px] flex items-center justify-center">
-            <Users size={22}/>
-          </div>
-
-          <span className={`font-semibold ml-3 transition-all duration-300 ease-in-out ${collapsed ? "md:opacity-0 md:w-0" : "opacity-100 w-auto"}`}>
-            Create Room
-          </span>
-
-        </button>
-
-
-        <button
-          onClick={() => handleNavigate("/notifications")}
-          className={`${itemStyle} ${getColor("/notifications")} relative`}
-        >
-
-          <div className="min-w-[24px] flex items-center justify-center relative">
-
-            <Bell size={22}/>
-
-            {unreadCount > 0 && (
-              <span className={`absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-white ${collapsed ? "md:flex" : "hidden"}`}>
-                {unreadCount > 9 ? "9+" : unreadCount}
+            {item.badge > 0 && !(collapsed && window.innerWidth >= 768) && (
+              <span className="ml-auto bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full animate-bounce-short">
+                {item.badge > 9 ? "9+" : item.badge}
               </span>
             )}
+            
+            {item.badge > 0 && (collapsed && window.innerWidth >= 768) && (
+              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-[var(--surface)]"></span>
+            )}
 
-          </div>
+            {isActive(item.path) && (
+                <div className="absolute left-0 w-1 h-6 bg-[var(--primary)] rounded-r-full" />
+            )}
+          </button>
+        ))}
 
-          <span className={`font-semibold ml-3 transition-all duration-300 ease-in-out ${collapsed ? "md:opacity-0 md:w-0" : "opacity-100 w-auto"}`}>
-            Notifications
-          </span>
-
-          {unreadCount > 0 && !(collapsed && window.innerWidth >= 768) && (
-            <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-              {unreadCount}
-            </span>
-          )}
-
-        </button>
-
-
-
-
-        <button
-          onClick={() => handleNavigate("/settings")}
-          className={`${itemStyle} ${getColor("/settings")}`}
-        >
-
-          <div className="min-w-[24px] flex items-center justify-center">
-            <Settings size={22}/>
-          </div>
-
-          <span className={`font-semibold ml-3 transition-all duration-300 ease-in-out ${collapsed ? "md:opacity-0 md:w-0" : "opacity-100 w-auto"}`}>
-            Settings
-          </span>
-
-        </button>
-
+        <div className="my-4 border-t border-[var(--border)] opacity-50" />
       </nav>
+
 
     </aside>
   );

@@ -45,12 +45,12 @@ function LoginPage() {
         </div>
 
         {/* RIGHT SIDE - FORM */}
-        <div className="w-full max-w-[400px] mx-auto">
+        <div className="w-full max-w-[440px] mx-auto">
           <form
             onSubmit={mode === "login" ? handleLogin : handleRegister}
-            className="bg-white border-2 border-[#8B5CF6] rounded-3xl p-10 flex flex-col gap-6 shadow-[8px_8px_0px_0px_rgba(139,92,246,0.1)] transition-all duration-300"
+            className="bg-white border-2 sm:border-4 border-[#8B5CF6] rounded-2xl sm:rounded-[40px] p-6 sm:p-10 flex flex-col gap-5 sm:gap-6 shadow-[8px_8px_0px_0px_rgba(139,92,246,0.1)] transition-all duration-300"
           >
-            <h1 className="text-4xl font-black text-center text-[#5B21B6] mb-2">
+            <h1 className="text-3xl sm:text-4xl font-black text-center text-[#5B21B6] mb-1 sm:mb-2">
               {mode === "login" ? "Login" : "Sign Up"}
             </h1>
 

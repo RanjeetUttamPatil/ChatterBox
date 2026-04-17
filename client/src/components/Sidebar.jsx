@@ -217,7 +217,7 @@ function Sidebar({ onClose }) {
 
             <button
               onClick={() => {
-                navigate("/profile");
+                navigate("/settings");
                 setShowMenu(false);
               }}
               className="cartoon-btn bg-[#A1EEBD]"
