@@ -7,6 +7,8 @@ import { THEMES } from "../constants";
 import assets from "../assets/assets";
 import axios from "axios";
 import { QRCodeCanvas as QRCode } from "qrcode.react";
+import Lottie from "lottie-react";
+import gearsAnimation from "../assets/Gears Lottie Animation.json";
 
 function Settings() {
 
@@ -94,9 +96,21 @@ function Settings() {
 
   <div className="min-h-full bg-[var(--bg)] text-[var(--text)] p-4 sm:p-8 pb-24">
 
-    <h1 className="text-3xl sm:text-4xl font-black mb-6 sm:mb-10 text-[var(--primary)]">
-      Settings
-    </h1>
+<div className="flex items-center gap-4 sm:gap-6 mb-8 sm:mb-12">
+
+  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center">
+    <Lottie
+      animationData={gearsAnimation}
+      loop
+      style={{ width: "100%", height: "100%" }}
+    />
+  </div>
+
+  <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[var(--primary)] tracking-wide">
+    Settings
+  </h1>
+
+</div>
 
     <div className="grid gap-6 sm:gap-8 grid-cols-1 lg:grid-cols-2">
 
@@ -111,30 +125,35 @@ function Settings() {
         <form onSubmit={saveProfile} className="flex flex-col gap-4">
 
           <label
-          htmlFor="avatar"
-          className="flex items-center gap-4 cursor-pointer p-2 rounded-xl hover:bg-[var(--bg)] transition-colors"
-          >
+  htmlFor="avatar"
+  className="flex items-center gap-4 cursor-pointer p-4 rounded-xl 
+  border-2 border-dashed border-[var(--border)] 
+  hover:border-[var(--primary)] hover:bg-[var(--bg)] 
+  transition-all duration-300"
+>
 
-            <input
-            id="avatar"
-            type="file"
-            hidden
-            accept=".png,.jpg,.jpeg"
-            onChange={(e)=>setSelectedImg(e.target.files[0])}
-            />
+  <input
+    id="avatar"
+    type="file"
+    hidden
+    accept=".png,.jpg,.jpeg"
+    onChange={(e)=>setSelectedImg(e.target.files[0])}
+  />
 
-            <img
-            src={
-              selectedImg
-              ? URL.createObjectURL(selectedImg)
-              : authUser?.profilePic || assets.avatar_icon
-            }
-            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-[var(--text)] object-cover"
-            />
+  <img
+    src={
+      selectedImg
+      ? URL.createObjectURL(selectedImg)
+      : authUser?.profilePic || assets.avatar_icon
+    }
+    className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-[var(--text)] object-cover"
+  />
 
-            <span className="text-sm font-semibold">Change avatar</span>
+  <span className="text-sm font-semibold">
+    Change avatar
+  </span>
 
-          </label>
+</label>
 
           <input
           value={name}
